@@ -28,7 +28,7 @@ warnings.filterwarnings('ignore', category=FutureWarning, module='insightface')
 warnings.filterwarnings('ignore', category=UserWarning, module='torchvision')
 
 
-def parse_args() -> None:
+def parse_args(lang: str = None, CpuOrCuda: str = None) -> None:
     signal.signal(signal.SIGINT, lambda signal_number, frame: destroy())
     program = argparse.ArgumentParser()
     program.add_argument('-s', '--source', help='select an source image', dest='source_path')
@@ -44,11 +44,29 @@ def parse_args() -> None:
     program.add_argument('--mouth-mask', help='mask the mouth region', dest='mouth_mask', action='store_true', default=False)
     program.add_argument('--video-encoder', help='adjust output video encoder', dest='video_encoder', default='libx264', choices=['libx264', 'libx265', 'libvpx-vp9'])
     program.add_argument('--video-quality', help='adjust output video quality', dest='video_quality', type=int, default=18, choices=range(52), metavar='[0-51]')
-    program.add_argument('-l', '--lang', help='Ui language', default="en")
+
+    # program.add_argument('-l', '--lang', help='Ui language', default="en")
+    if lang != None:
+        program.add_argument("-l", "--lang", help="Ui language", default=lang)
+    else:
+        program.add_argument('-l', '--lang', help='Ui language', default="en")
+
     program.add_argument('--live-mirror', help='The live camera display as you see it in the front-facing camera frame', dest='live_mirror', action='store_true', default=False)
     program.add_argument('--live-resizable', help='The live camera frame is resizable', dest='live_resizable', action='store_true', default=False)
     program.add_argument('--max-memory', help='maximum amount of RAM in GB', dest='max_memory', type=int, default=suggest_max_memory())
-    program.add_argument('--execution-provider', help='execution provider', dest='execution_provider', default=['cpu'], choices=suggest_execution_providers(), nargs='+')
+    # program.add_argument('--execution-provider', help='execution provider', dest='execution_provider', default=['cpu'], choices=suggest_execution_providers(), nargs='+')
+    # program.add_argument('--execution-provider', help='execution provider', dest='execution_provider', default=['cuda'], choices=suggest_execution_providers(), nargs='+')
+    if CpuOrCuda != None:
+        program.add_argument(
+            "--execution-provider",
+            help="execution provider",
+            dest="execution_provider",
+            default=[CpuOrCuda],
+            choices=suggest_execution_providers(),
+            nargs="+",
+        )
+    else:
+        program.add_argument("--execution-provider", help="execution provider", dest="execution_provider", default=["cpu"], choices=suggest_execution_providers(), nargs="+", )
     program.add_argument('--execution-threads', help='number of execution threads', dest='execution_threads', type=int, default=suggest_execution_threads())
     program.add_argument('-v', '--version', action='version', version=f'{modules.metadata.name} {modules.metadata.version}')
 
@@ -81,7 +99,7 @@ def parse_args() -> None:
     modules.globals.execution_threads = args.execution_threads
     modules.globals.lang = args.lang
 
-    #for ENHANCER tumbler:
+    # for ENHANCER tumbler:
     if 'face_enhancer' in args.frame_processor:
         modules.globals.fp_ui['face_enhancer'] = True
     else:
@@ -244,8 +262,8 @@ def destroy(to_quit=True) -> None:
     if to_quit: quit()
 
 
-def run() -> None:
-    parse_args()
+def run(lang: str = None,CpuOrCuda:str=None) -> None:
+    parse_args(lang,CpuOrCuda)
     if not pre_check():
         return
     for frame_processor in get_frame_processors_modules(modules.globals.frame_processors):
