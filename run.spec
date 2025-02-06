@@ -3,59 +3,27 @@
 
 block_cipher = None
 
+cuda_version_11 = "v11.8"  # Adjust to your CUDA version
+cuda_version_12 = "v12.1"  # Adjust to your CUDA version
+cuda_path_11 = f"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\{cuda_version_11}\\bin" # Use raw string or escaped backslashes
+cuda_path_12 = f"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\{cuda_version_12}\\bin" # Use raw string or escaped backslashes
+
 a = Analysis(
-    ['run.py',     
-    'J:\\Deep-Live-Cam-cust\\models\\inswapper_128_fp16.onnx',
-    'J:\\Deep-Live-Cam-cust\\media\\avgpcperformancedemo.gif',
-    'J:\\Deep-Live-Cam-cust\\media\\deepwarebench.gif',
-    'J:\\Deep-Live-Cam-cust\\media\\demo.gif',
-    'J:\\Deep-Live-Cam-cust\\media\\download.png',
-    'J:\\Deep-Live-Cam-cust\\media\\instruction.png',
-    'J:\\Deep-Live-Cam-cust\\media\\live_show.gif',
-    'J:\\Deep-Live-Cam-cust\\media\\ludwig.gif',
-    'J:\\Deep-Live-Cam-cust\\media\\meme.gif',
-    'J:\\Deep-Live-Cam-cust\\media\\movie.gif',
-    'J:\\Deep-Live-Cam-cust\\media\\streamers.gif',
-    'J:\\Deep-Live-Cam-cust\\modules\\capturer.py',
-    'J:\\Deep-Live-Cam-cust\\modules\\cluster_analysis.py',
-    'J:\\Deep-Live-Cam-cust\\modules\\core.py',
-    'J:\\Deep-Live-Cam-cust\\modules\\face_analyser.py',   
-    'J:\\Deep-Live-Cam-cust\\modules\\gettext.py',
-    'J:\\Deep-Live-Cam-cust\\modules\\globals.py',
-    'J:\\Deep-Live-Cam-cust\\modules\\metadata.py',        
-    'J:\\Deep-Live-Cam-cust\\modules\\predicter.py',       
-    'J:\\Deep-Live-Cam-cust\\modules\\typing.py',
-    'J:\\Deep-Live-Cam-cust\\modules\\ui.json',
-    'J:\\Deep-Live-Cam-cust\\modules\\ui.py',
-    'J:\\Deep-Live-Cam-cust\\modules\\utilities.py',       
-    'J:\\Deep-Live-Cam-cust\\modules\\video_capture.py',
-    'J:\\Deep-Live-Cam-cust\\modules\\__init__.py',
-    'J:\\Deep-Live-Cam-cust\\modules\\processors\\__init__.py',
-    'J:\\Deep-Live-Cam-cust\\modules\\processors\\frame\\core.py',
-    'J:\\Deep-Live-Cam-cust\\modules\\processors\\frame\\face_enhancer.py',
-    'J:\\Deep-Live-Cam-cust\\modules\\processors\\frame\\face_swapper.py',
-    'J:\\Deep-Live-Cam-cust\\modules\\processors\\frame\\inswapper_128_fp16.onnx',
-    'J:\\Deep-Live-Cam-cust\\modules\\processors\\frame\\__init__.py',
-    'J:\\Deep-Live-Cam-cust\\modules\\processors\\frame\\__pycache__\\core.cpython-310.pyc',
-    'J:\\Deep-Live-Cam-cust\\modules\\processors\\frame\\__pycache__\\face_enhancer.cpython-310.pyc',
-    'J:\\Deep-Live-Cam-cust\\modules\\processors\\frame\\__pycache__\\face_swapper.cpython-310.pyc',
-    'J:\\Deep-Live-Cam-cust\\modules\\processors\\frame\\__pycache__\\__init__.cpython-310.pyc',
-    'J:\\Deep-Live-Cam-cust\\modules\\processors\\__pycache__\\__init__.cpython-310.pyc',
-    'J:\\Deep-Live-Cam-cust\\modules\\__pycache__\\capturer.cpython-310.pyc',
-    'J:\\Deep-Live-Cam-cust\\modules\\__pycache__\\cluster_analysis.cpython-310.pyc',
-    'J:\\Deep-Live-Cam-cust\\modules\\__pycache__\\core.cpython-310.pyc',
-    'J:\\Deep-Live-Cam-cust\\modules\\__pycache__\\face_analyser.cpython-310.pyc',
-    'J:\\Deep-Live-Cam-cust\\modules\\__pycache__\\gettext.cpython-310.pyc',
-    'J:\\Deep-Live-Cam-cust\\modules\\__pycache__\\globals.cpython-310.pyc',
-    'J:\\Deep-Live-Cam-cust\\modules\\__pycache__\\metadata.cpython-310.pyc',
-    'J:\\Deep-Live-Cam-cust\\modules\\__pycache__\\typing.cpython-310.pyc',
-    'J:\\Deep-Live-Cam-cust\\modules\\__pycache__\\ui.cpython-310.pyc',
-    'J:\\Deep-Live-Cam-cust\\modules\\__pycache__\\utilities.cpython-310.pyc',
-    'J:\\Deep-Live-Cam-cust\\modules\\__pycache__\\video_capture.cpython-310.pyc',
-    'J:\\Deep-Live-Cam-cust\\modules\\__pycache__\\__init__.cpython-310.pyc'],
-    pathex=['J:\\Deep-Live-Cam-cust'],
-    binaries=[],
-    datas=[("models/GFPGANv1.4.pth","models"),("models/inswapper_128_fp16.onnx","models")],
+    [
+        'run.py'
+    ],
+    pathex=[],
+    binaries=[
+        (os.path.join(cuda_path_11, "cudart64_110.dll"), '.'),  # CUDA Runtime
+        (os.path.join(cuda_path_12, "cudart64_12.dll"), '.'),  # CUDA Runtime
+        (os.path.join(cuda_path_11, "cublas64_11.dll"), '.'),  # cuBLAS (if needed)
+        (os.path.join(cuda_path_12, "cublas64_12.dll"), '.'),  # cuBLAS (if needed)
+    ],
+    datas=[
+        ("models","models"),
+        ("modules", "modules"),
+        ("locales", "locales"),
+    ],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -83,7 +51,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    log_level='DEBUG',  # Add log level
+    log_level='TRACE',  # Add log level
 )
 coll = COLLECT(
     exe,
@@ -94,5 +62,5 @@ coll = COLLECT(
     upx=True,
     upx_exclude=[],
     name='run',
-    onefile=False,  # Set to False to enable --onedir
+    onefile=True,  # Set to False to enable --onedir
 )
