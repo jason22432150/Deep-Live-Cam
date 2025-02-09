@@ -904,6 +904,7 @@ def create_webcam_preview(camera_index: int):
 
         if not modules.globals.map_faces:
             if source_image is None and modules.globals.source_path:
+                print("Getting source image: ", modules.globals.source_path)
                 source_image = get_one_face(cv2.imread(modules.globals.source_path))
 
             for frame_processor in frame_processors:

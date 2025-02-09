@@ -20,3 +20,14 @@ if __name__ == "__main__":
     for file in files:
         # print(replace_backslashes(file))
         print(file)
+
+
+
+
+#  --add-binary
+# venv/Lib/site-packages/onnxruntime/capi/onnxruntime_providers_cuda.dll;
+# ./onnxruntime/capi/
+#
+# --add-binary
+# venv/Lib/site-packages/onnxruntime/capi/onnxruntime_providers_tensorrt.dll;
+# ./onnxruntime/capi/

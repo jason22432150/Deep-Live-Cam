@@ -28,6 +28,7 @@ models_dir = os.path.join(
 
 def pre_check() -> bool:
     download_directory_path = abs_dir
+    print('download_directory_path: ', download_directory_path)
     conditional_download(
         download_directory_path,
         [
@@ -44,6 +45,7 @@ def pre_start() -> bool:
     elif not modules.globals.map_faces and not get_one_face(
         cv2.imread(modules.globals.source_path)
     ):
+        print('No face in source path detected.')
         update_status("No face in source path detected.", NAME)
         return False
     if not is_image(modules.globals.target_path) and not is_video(
@@ -60,9 +62,11 @@ def get_face_swapper() -> Any:
     with THREAD_LOCK:
         if FACE_SWAPPER is None:
             model_path = os.path.join(models_dir, "inswapper_128_fp16.onnx")
+            print('FACE_SWAPPER is None:',model_path)
             FACE_SWAPPER = insightface.model_zoo.get_model(
                 model_path, providers=modules.globals.execution_providers
             )
+        print('FACE_SWAPPER:',FACE_SWAPPER)
     return FACE_SWAPPER
 
 
