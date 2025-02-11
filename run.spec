@@ -23,7 +23,7 @@ a = Analysis(
         (os.path.join(cuda_path_11, "cublas64_11.dll"), '.'),  # cuBLAS (如果需要)
     ],
     datas=[        # 資料文件
-        ("insightface", "insightface"),
+        ("package_in_exe\\insightface", "insightface"),
         ("models", "models"),
         ("modules", "modules"),
         ("locales", "locales"),
