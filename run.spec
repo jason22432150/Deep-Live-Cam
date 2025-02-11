@@ -61,6 +61,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    jobs=4,  # 启用并行构建，4 是并行任务数
 )
 
 # 收集文件
