@@ -146,7 +146,8 @@ def create_root(start: Callable[[], None], destroy: Callable[[], None]) -> ctk.C
     root = ctk.CTk()
     root.minsize(ROOT_WIDTH, ROOT_HEIGHT)
     root.title(
-        f"{modules.metadata.name} {modules.metadata.version} {modules.metadata.edition}"
+        f"{modules.metadata.name}"
+        # f"{modules.metadata.name} {modules.metadata.version} {modules.metadata.edition}"
     )
     root.configure()
     root.protocol("WM_DELETE_WINDOW", lambda: destroy())
@@ -368,16 +369,16 @@ def create_root(start: Callable[[], None], destroy: Callable[[], None]) -> ctk.C
     status_label = ctk.CTkLabel(root, text=None, justify="center")
     status_label.place(relx=0.1, rely=0.9, relwidth=0.8)
 
-    donate_label = ctk.CTkLabel(
-        root, text="Deep Live Cam", justify="center", cursor="hand2"
-    )
-    donate_label.place(relx=0.1, rely=0.95, relwidth=0.8)
-    donate_label.configure(
-        text_color=ctk.ThemeManager.theme.get("URL").get("text_color")
-    )
-    donate_label.bind(
-        "<Button>", lambda event: webbrowser.open("https://deeplivecam.net")
-    )
+    # donate_label = ctk.CTkLabel(
+    #     root, text="Deep Live Cam", justify="center", cursor="hand2"
+    # )
+    # donate_label.place(relx=0.1, rely=0.95, relwidth=0.8)
+    # donate_label.configure(
+    #     text_color=ctk.ThemeManager.theme.get("URL").get("text_color")
+    # )
+    # donate_label.bind(
+    #     "<Button>", lambda event: webbrowser.open("https://deeplivecam.net")
+    # )
 
     return root
 
