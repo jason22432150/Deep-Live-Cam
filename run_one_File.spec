@@ -23,12 +23,14 @@ a = Analysis(
         (os.path.join(cuda_path_11, "cublas64_11.dll"), '.'),  # cuBLAS (如果需要)
     ],
     datas=[        # 資料文件
+        ("venv\\Lib\\site-packages", "."),
         ("package_in_exe\\insightface", "insightface"),
+        ("venv\\Lib\\site-packages\\gfpgan", "gfpgan"),
         ("models", "models"),
         ("modules", "modules"),
         ("locales", "locales"),
     ],
-    hiddenimports=[],  # 隱藏導入的模組
+    hiddenimports=['gfpgan','frame_processor_module','threading','cv2','torch','platform'],  # 隱藏導入的模組
     hookspath=[],  # 自定義鉤子路徑
     runtime_hooks=[],  # 運行時鉤子
     excludes=[],  # 排除的模組
@@ -39,7 +41,8 @@ a = Analysis(
 )
 
 # 設置緩存目錄為當前專案下的 temp 資料夾
-a.binaries = a.binaries + collect_dynamic_libs('temp')
+# 移除不必要的行
+# a.binaries = a.binaries + collect_dynamic_libs('temp')
 
 # 打包成單一文件
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
@@ -48,30 +51,31 @@ pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 exe = EXE(
     pyz,
     a.scripts,
-    [],
-    exclude_binaries=True,
-    name='run',  # 輸出文件名
-    debug=True,  # 開啟 debug 模式
-    bootloader_ignore_signals=False,
-    strip=False,
-    upx=False,  # 禁用 UPX 壓縮以加快速度
-    console=True,  # 開啟 console
-    disable_windowed_traceback=False,
-    argv_emulation=False,
-    target_arch=None,
-    codesign_identity=None,
-    entitlements_file=None,
-    jobs=4,  # 启用并行构建，4 是并行任务数
-)
-
-# 收集文件
-coll = COLLECT(
-    exe,
-    a.binaries,
+    a.binaries,  # 這裡應該填 a.binaries 而不是 []
     a.zipfiles,
     a.datas,
-    strip=False,
-    upx=False,
-    upx_exclude=[],
-    name='run',  # 輸出文件名
+    [],
+    name='旺旺換臉',  # 設定輸出文件名
+    debug=False,  # 關閉 debug 模式
+    bootloader_ignore_signals=False,  # 不忽略啟動加載器信號
+    strip=False,  # 不移除符號表
+    upx=False,  # 啟用 UPX 壓縮以減小文件大小
+    console=False,  # GUI 應用關閉 console
+    disable_windowed_traceback=False,  # 允許 GUI 回溯顯示
+    target_arch=None,  # 不指定目標架構
+    codesign_identity=None,  # 不使用代碼簽名身份
+    entitlements_file=None  # 不使用權限文件
 )
+
+
+# 移除 COLLECT 部分，因為我們要單一 EXE
+# coll = COLLECT(
+#     exe,
+#     a.binaries,
+#     a.zipfiles,
+#     a.datas,
+#     strip=False,
+#     upx=False,
+#     upx_exclude=[],
+#     name='run',  # 輸出文件名
+# )

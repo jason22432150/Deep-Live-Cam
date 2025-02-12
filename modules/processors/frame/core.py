@@ -22,8 +22,11 @@ def load_frame_processor_module(frame_processor: str) -> Any:
     print(f"\033[34m Debug: load_frame_processor_module function called for frame_processor: {frame_processor} \033[0m") # Debug: Function entry
     try:
         print(f"\033[34m Debug: Attempting to import module: modules.processors.frame.{frame_processor} \033[0m") # Debug: Module import attempt
-        frame_processor_module = importlib.import_module(f'modules.processors.frame.{frame_processor}')
-        print(f"\033[34m Debug: Successfully imported module: {frame_processor_module} \033[0m") # Debug: Module import success
+        try:
+            frame_processor_module = importlib.import_module(f'modules.processors.frame.{frame_processor}')
+            print(f"\033[34m Debug: Successfully imported module: {frame_processor_module} \033[0m") # Debug: Module import success
+        except Exception as e:
+            print(f"\033[34m Debug: Error occurred while importing module: {e} \033[0m")
         for method_name in FRAME_PROCESSORS_INTERFACE:
             if not hasattr(frame_processor_module, method_name):
                 print(f"\033[34m Debug: Module {frame_processor_module} does not have method: {method_name}. Exiting. \033[0m") # Debug: Missing method
