@@ -2,6 +2,22 @@ import subprocess
 import os
 import platform
 
+def check_cuda_installation():
+    print("檢查CUDA是否已安裝...")
+    try:
+        # 檢查CUDA版本
+        result = subprocess.run(["nvcc", "--version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        if "Cuda compilation tools, release 11.8" in result.stdout:
+            print(f"CUDA 11.8 已安裝: {result.stdout.splitlines()[3]}")
+            return True
+        else:
+            print("CUDA 11.8 未安裝或版本不正確。")
+            return False
+    except FileNotFoundError:
+        print("未找到nvcc命令，CUDA可能未安裝。")
+        return False
+
+
 def install_cuda():
     # 檢查操作系統
     system = platform.system()
@@ -10,10 +26,12 @@ def install_cuda():
         return
 
     # 定義CUDA 11.8安裝包的URL
-    cuda_version = "11.8"
+    cuda_version = "11.8.0"
+    cuda_package_version = "11.8.0_522.06"
     cuda_url = ""
     if system == "Windows":
-        cuda_url = f"https://developer.download.nvidia.com/compute/cuda/{cuda_version}/network_installers/cuda_{cuda_version}_windows_network.exe"
+        cuda_url = f"https://developer.download.nvidia.com/compute/cuda/{cuda_version}/local_installers/cuda_{cuda_version}_windows.exe"
+                        #  https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda_11.8.0_522.06_windows.exe
     elif system == "Linux":
         cuda_url = f"https://developer.download.nvidia.com/compute/cuda/{cuda_version}/local_installers/cuda_{cuda_version}_linux.run"
 
@@ -70,6 +88,11 @@ def check_cuda_installation():
         return False
 
 if __name__ == "__main__":
-    install_cuda()
+    # 先檢查CUDA是否已經安裝
+    if check_cuda_installation():
+        print("CUDA 11.8 已經安裝，無需重新安裝。")
+    else:
+        # 如果未安裝，則執行安裝
+        install_cuda()
     # 等待用戶輸入後結束
     input("按 Enter 鍵結束...")
