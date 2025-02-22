@@ -24,4 +24,5 @@ tkinterdnd2==0.4.2
 pygrabber==0.2
 onnxruntime-gpu==1.16.3
 wmi==1.5.1
-pyinstaller
+pyinstaller==4.7
+pocketbase==0.1.0
