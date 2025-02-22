@@ -11,4 +11,9 @@ if __name__ == "__main__":
         serial_number = cpu_info[0].ProcessorId
         print("cpu: ", serial_number)
 
-    core.run(lang="zh-TW", CpuOrCuda="cuda")
+    try:
+        core.run(lang="zh-TW", CpuOrCuda="cuda")
+    except Exception as e:
+        print(e)
+        input("Press Enter to exit...")
+    # core.run(lang="zh-TW", CpuOrCuda="cuda")

@@ -202,17 +202,20 @@ def create_root(start: Callable[[], None], destroy: Callable[[], None]) -> ctk.C
     )
     keep_frames_switch.place(relx=0.1, rely=0.65)
 
+    # 創建一個布林變數來保存增強器的狀態
     enhancer_value = ctk.BooleanVar(value=modules.globals.fp_ui["face_enhancer"])
+    # 創建一個開關按鈕來控制增強器
     enhancer_switch = ctk.CTkSwitch(
         root,
-        text=_("Face Enhancer"),
-        variable=enhancer_value,
-        cursor="hand2",
+        text=_("Face Enhancer"),  # 設置按鈕的文本
+        variable=enhancer_value,  # 綁定布林變數
+        cursor="hand2",  # 設置鼠標樣式
         command=lambda: (
-            update_tumbler("face_enhancer", enhancer_value.get()),
-            save_switch_states(),
+            update_tumbler("face_enhancer", enhancer_value.get()),  # 更新增強器狀態
+            save_switch_states(),  # 保存開關狀態
         ),
     )
+    # 設置開關按鈕的位置
     enhancer_switch.place(relx=0.1, rely=0.7)
 
     keep_audio_value = ctk.BooleanVar(value=modules.globals.keep_audio)
@@ -539,16 +542,19 @@ def update_popup_source(
 def create_preview(parent: ctk.CTkToplevel) -> ctk.CTkToplevel:
     global preview_label, preview_slider
 
+    # 創建一個新的 Toplevel 視窗作為預覽視窗
     preview = ctk.CTkToplevel(parent)
-    preview.withdraw()
-    preview.title(_("Preview"))
-    preview.configure()
-    preview.protocol("WM_DELETE_WINDOW", lambda: toggle_preview())
-    preview.resizable(width=True, height=True)
+    preview.withdraw()  # 隱藏預覽視窗
+    preview.title(_("Preview"))  # 設定視窗標題
+    preview.configure()  # 配置視窗
+    preview.protocol("WM_DELETE_WINDOW", lambda: toggle_preview())  # 設定關閉視窗的行為
+    preview.resizable(width=True, height=True)  # 設定視窗可調整大小
 
+    # 創建一個標籤來顯示預覽圖像
     preview_label = ctk.CTkLabel(preview, text=None)
     preview_label.pack(fill="both", expand=True)
 
+    # 創建一個滑動條來控制預覽幀
     preview_slider = ctk.CTkSlider(
         preview, from_=0, to=0, command=lambda frame_value: update_preview(frame_value)
     )
@@ -753,25 +759,70 @@ def init_preview() -> None:
 
 
 def update_preview(frame_number: int = 0) -> None:
+    # 定義函式 update_preview，用於更新預覽視窗，預設影格編號為 0
+    print("\033[31;40m Debug: update_preview function called \033[0m") # Debug: Indicate function call
+    print(f"\033[31;40m Debug: Input frame_number: {frame_number} \033[0m") # Debug: Print input frame_number
     if modules.globals.source_path and modules.globals.target_path:
-        update_status("Processing...")
+        # 檢查是否同時設定了來源路徑和目標路徑
+        print("\033[31;40m Debug: Both source_path and target_path are set. \033[0m") # Debug: Indicate paths are set
+        update_status("Processing...")  # 更新狀態為處理中
+        print(f"\033[31;40m Debug: source_path: ", modules.globals.source_path, "\033[0m")
+        print( f"\033[31;40m Debug: frame_number: ", frame_number, "\033[0m")
+        # 更新狀態顯示為 "Processing..." (處理中...)
+        print(f"\033[31;40m Debug: Calling get_video_frame with target_path: {modules.globals.target_path} and frame_number: {frame_number} \033[0m") # Debug: Indicate get_video_frame call and arguments
         temp_frame = get_video_frame(modules.globals.target_path, frame_number)
-        if modules.globals.nsfw_filter and check_and_ignore_nsfw(temp_frame):
-            return
-        for frame_processor in get_frame_processors_modules(
-                modules.globals.frame_processors
-        ):
+        print(f"\033[31;40m Debug: get_video_frame returned frame with shape: {temp_frame.shape if hasattr(temp_frame, 'shape') else 'Unknown'} \033[0m") # Debug: Print frame shape
+        # 從目標影片路徑中獲取指定影格編號的影格
+        if modules.globals.nsfw_filter:
+            print("\033[31;40m Debug: NSFW filter is enabled. \033[0m") # Debug: Indicate NSFW filter enabled
+            if check_and_ignore_nsfw(temp_frame):
+                # 檢查是否啟用 NSFW 過濾器，並且當前影格被判斷為 NSFW 內容時
+                print("\033[31;40m Debug: Frame is NSFW and ignored. \033[0m") # Debug: Indicate frame is NSFW and ignored
+                return # 如果是 NSFW 內容，則直接返回，不進行後續處理
+            else:
+                print("\033[31;40m Debug: Frame is not NSFW or NSFW check skipped. \033[0m") # Debug: Indicate frame is not NSFW
+        else:
+            print("\033[31;40m Debug: NSFW filter is disabled. \033[0m") # Debug: Indicate NSFW filter disabled
+
+        print(f"\033[31;40m Debug:  modules.globals.frame_processors: {modules.globals.frame_processors} \033[0m") # Debug: Indicate get_frame_processors_modules call
+
+        frame_processors = get_frame_processors_modules(modules.globals.frame_processors)
+
+        print(f"\033[31;40m Debug: Frame processors modules: {frame_processors} \033[0m") # Debug: Print frame processors list
+        for frame_processor in frame_processors:
+            # 迭代處理每個已啟用的影格處理器模組
+            print(f"\033[31;40m Debug: frame_processor: ", frame_processor, "\033[0m")
+            # 印出當前處理的影格處理器模組名稱 (debug 用)
+            print(f"\033[31;40m Debug: Processing frame with {frame_processor} using source_path: {modules.globals.source_path} and temp_frame shape: {temp_frame.shape if hasattr(temp_frame, 'shape') else 'Unknown'} \033[0m") # Debug: Print processor and input shapes
             temp_frame = frame_processor.process_frame(
                 get_one_face(cv2.imread(modules.globals.source_path)), temp_frame
             )
+            print(f"\033[31;40m Debug: Frame processed by {frame_processor}, new shape: {temp_frame.shape if hasattr(temp_frame, 'shape') else 'Unknown'} \033[0m") # Debug: Print frame shape after processing
+
         image = Image.fromarray(cv2.cvtColor(temp_frame, cv2.COLOR_BGR2RGB))
+        # 將 OpenCV 影格 (BGR 格式) 轉換為 PIL Image 物件 (RGB 格式)
+        print(f"\033[31;40m Debug: PIL Image created, size: {image.size} \033[0m") # Debug: Print PIL Image size
         image = ImageOps.contain(
             image, (PREVIEW_MAX_WIDTH, PREVIEW_MAX_HEIGHT), Image.LANCZOS
         )
+        # 調整圖片大小以符合預覽視窗的最大寬度和高度，使用 LANCZOS 演算法保持圖片品質
+        print(f"\033[31;40m Debug: PIL Image resized, new size: {image.size} \033[0m") # Debug: Print resized PIL Image size
         image = ctk.CTkImage(image, size=image.size)
+        # print("image: ", image)
+        # 將 PIL Image 物件轉換為 ctk.CTkImage 物件，以便在 CustomTkinter 標籤中顯示
         preview_label.configure(image=image)
-        update_status("Processing succeed!")
-        PREVIEW.deiconify()
+        # 設定預覽標籤的圖片為處理後的圖片
+        update_status("Processing succeed!")  # 更新狀態為處理成功
+        # 更新狀態顯示為 "Processing succeed!" (處理成功!)
+        PREVIEW.deiconify()  # 顯示預覽視窗
+        print("\033[31;40m Debug: Preview window deiconified. \033[0m") # Debug: Indicate preview window shown
+        # 顯示預覽視窗
+    else:
+        print("\033[31;40m Debug: source_path or target_path is not set. Preview update skipped. \033[0m") # Debug: Indicate path missing
+        if not modules.globals.source_path:
+            print("\033[31;40m Debug: source_path is missing. \033[0m") # Debug: Indicate source_path missing
+        if not modules.globals.target_path:
+            print("\033[31;40m Debug: target_path is missing. \033[0m") # Debug: Indicate target_path missing
 
 
 def webcam_preview(root: ctk.CTk, camera_index: int):
@@ -912,6 +963,7 @@ def create_webcam_preview(camera_index: int):
                 if frame_processor.NAME == "DLC.FACE-ENHANCER":
                     if modules.globals.fp_ui["face_enhancer"]:
                         temp_frame = frame_processor.process_frame(None, temp_frame)
+                        print("temp_frame: ", temp_frame)
                 else:
                     temp_frame = frame_processor.process_frame(source_image, temp_frame)
         else:
@@ -920,6 +972,7 @@ def create_webcam_preview(camera_index: int):
                 if frame_processor.NAME == "DLC.FACE-ENHANCER":
                     if modules.globals.fp_ui["face_enhancer"]:
                         temp_frame = frame_processor.process_frame_v2(temp_frame)
+                        print("temp_frame: ", temp_frame)
                 else:
                     temp_frame = frame_processor.process_frame_v2(temp_frame)
 

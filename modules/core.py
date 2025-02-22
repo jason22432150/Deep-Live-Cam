@@ -82,7 +82,6 @@ def parse_args(lang: str = None, CpuOrCuda: str = None) -> None:
     modules.globals.target_path = args.target_path
     modules.globals.output_path = normalize_output_path(modules.globals.source_path, modules.globals.target_path, args.output_path)
     modules.globals.frame_processors = args.frame_processor
-    print("modules.globals.frame_processors: ", modules.globals.frame_processors)
     modules.globals.headless = args.source_path or args.target_path or args.output_path
     modules.globals.keep_fps = args.keep_fps
     modules.globals.keep_audio = args.keep_audio
@@ -103,11 +102,8 @@ def parse_args(lang: str = None, CpuOrCuda: str = None) -> None:
     # for ENHANCER tumbler:
     if 'face_enhancer' in args.frame_processor:
         modules.globals.fp_ui['face_enhancer'] = True
-        print("face_enhancer is in args.frame_processor")
     else:
         modules.globals.fp_ui['face_enhancer'] = False
-        print("face_enhancer is not in args.frame_processor")
-    print("modules.globals.fp_ui: ", modules.globals.fp_ui)
     # translate deprecated args
     if args.source_path_deprecated:
         print('\033[33mArgument -f and --face are deprecated. Use -s and --source instead.\033[0m')

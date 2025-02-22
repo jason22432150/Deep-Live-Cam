@@ -28,7 +28,6 @@ models_dir = os.path.join(
 
 def pre_check() -> bool:
     download_directory_path = abs_dir
-    print('download_directory_path: ', download_directory_path)
     conditional_download(
         download_directory_path,
         [

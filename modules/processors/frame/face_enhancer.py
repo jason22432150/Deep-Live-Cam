@@ -29,6 +29,7 @@ models_dir = os.path.join(
 
 
 def pre_check() -> bool:
+    print("models_dir: ", models_dir)
     download_directory_path = models_dir
     conditional_download(
         download_directory_path,
@@ -41,7 +42,7 @@ def pre_check() -> bool:
 
 def pre_start() -> bool:
     if not is_image(modules.globals.target_path) and not is_video(
-        modules.globals.target_path
+            modules.globals.target_path
     ):
         update_status("Select an image or video for target path.", NAME)
         return False
@@ -50,17 +51,20 @@ def pre_start() -> bool:
 
 def get_face_enhancer() -> Any:
     global FACE_ENHANCER
+    # print('golobal FACE_ENHANCER: ', FACE_ENHANCER)
 
     with THREAD_LOCK:
         if FACE_ENHANCER is None:
             model_path = os.path.join(models_dir, "GFPGANv1.4.pth")
-            print('FACE_ENHANCER is None')
-            
+            # print('model_path: ', model_path)
+            # print('FACE_ENHANCER is None')
+
             match platform.system():
                 case "Darwin":  # Mac OS
                     if torch.backends.mps.is_available():
                         mps_device = torch.device("mps")
-                        FACE_ENHANCER = gfpgan.GFPGANer(model_path=model_path, upscale=1, device=mps_device)  # type: ignore[attr-defined]
+                        FACE_ENHANCER = gfpgan.GFPGANer(model_path=model_path, upscale=1,
+                                                        device=mps_device)  # type: ignore[attr-defined]
                     else:
                         FACE_ENHANCER = gfpgan.GFPGANer(model_path=model_path, upscale=1)  # type: ignore[attr-defined]
                 case _:  # Other OS
@@ -83,7 +87,7 @@ def process_frame(source_face: Face, temp_frame: Frame) -> Frame:
 
 
 def process_frames(
-    source_path: str, temp_frame_paths: List[str], progress: Any = None
+        source_path: str, temp_frame_paths: List[str], progress: Any = None
 ) -> None:
     for temp_frame_path in temp_frame_paths:
         temp_frame = cv2.imread(temp_frame_path)
