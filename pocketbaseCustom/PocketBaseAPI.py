@@ -32,8 +32,6 @@ def get_token():
     client = PocketBase(BASE_URL)
     user_data = client.collection("users").auth_with_password(
         "user@example.com", "4ZQ50ZFoABO-nNR")
-    # check if user token is valid
-    # user_data.is_valid
     return user_data.token
 
 
@@ -60,10 +58,8 @@ def create_machine(license_id):
         "filter": f"Fingerprint = '{encryption.get_fingerprint()}'"})
     if license_verify_res.items:
         print("Machine already exists")
-        # print(license_verify_res.items)
         return
     else:
-        # print(license_verify_res.items[0]["id"])
         # 設置請求主體
         body = {
             "Licence": f"{license_id}",
@@ -94,16 +90,13 @@ def verify_machine(machine_Fingerprint):
         print(license_verify_res.items)
         return True
     else:
-        # print(license_verify_res.items[0]["id"])
         return False
 
 
 if __name__ == "__main__":
     # client = PocketBase('https://pocketbase.miku-izayoi.uk')
-    # license_verify, license_id = license_verify(client, "I3848-7D07X-0881B-XGAC1")
+    # license_verify, license_id = license_verify(client, "123456")
     # if license_verify:
     #     create_machine(client, encryption.get_fingerprint(), PC_detail.get_ip_address(), license_id)
     pass
-    # print(license_verify(client, "9D0W1-7MRV9-W0B9M-JRJ0Q"))
-    # print(license_verify(client, "I3848-7D07X-0881B-XGAC"))
-    # print(license_verify(client, "9D0W1-7MRV9-W0B9M-JRJ0"))
+    # print(license_verify(client, ""))
