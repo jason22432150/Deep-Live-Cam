@@ -1,10 +1,8 @@
 import tkinter as tk
-from tabnanny import check
 from tkinter import ttk
 from tkinter import messagebox
-from components import encryption
-import PocketBase
-import edit_init_file
+from pocketbaseCustom.components import encryption
+from pocketbaseCustom import PocketBaseAPI
 
 
 def create_gui():
@@ -60,7 +58,7 @@ def submit_license(root, license_key):
         warning_message_license_empty = "請注意：'授權碼' 欄位不能為空。請輸入您的有效 License 碼。"
         tk.messagebox.showwarning("警告", warning_message_license_empty)
     else:
-        if PocketBase.license_verify(license_key):
+        if PocketBaseAPI.license_verify(license_key):
             print("License 驗證成功！")
             success_message_license_verified = "License 驗證成功！"
             tk.messagebox.showinfo("成功", success_message_license_verified)
@@ -75,7 +73,7 @@ def submit_license(root, license_key):
 
 
 if __name__ == "__main__":
-    if not PocketBase.verify_machine(encryption.get_fingerprint()):
+    if not PocketBaseAPI.verify_machine(encryption.get_fingerprint()):
         root = create_gui()
         root.mainloop()
         print(root)

@@ -1,4 +1,4 @@
-__title__ = "pocketbase"
+__title__ = "pocketbaseCustom"
 __description__ = "PocketBase client SDK for python."
 __version__ = "0.10.1"
 

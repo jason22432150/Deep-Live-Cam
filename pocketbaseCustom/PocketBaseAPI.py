@@ -1,11 +1,6 @@
 from pocketbase import PocketBase  # Client also works the same
-from components import PC_detail
-from components import encryption
-import tkinter as tk
-from tkinter import messagebox
-
-# from pocketbase.client import FileUpload
-# import json
+from pocketbaseCustom.components import PC_detail
+from pocketbaseCustom.components import encryption
 
 BLACK = '\033[30m'
 RED = '\033[31m'
@@ -57,13 +52,13 @@ def license_verify(license_value):
         return False
 
 
-def create_machine(machine_Fingerprint, machine_ip, license_id):
+def create_machine(license_id):
     client = PocketBase(BASE_URL)
     # token_admin = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJwYmNfMzE0MjYzNTgyMyIsImV4cCI6MTc0MDEzMjMwMCwiaWQiOiI3MDc0OWJsMDBvaXk3MjgiLCJyZWZyZXNoYWJsZSI6ZmFsc2UsInR5cGUiOiJhdXRoIn0.VdViLF_zghXa9vCy4za8cvyxkhEXPLl_9gl2oyXe_0k"
     token_user = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJfcGJfdXNlcnNfYXV0aF8iLCJleHAiOjE3NDA2NTA4MDgsImlkIjoicHltMmo1ZXE0MzRyN3Q2IiwicmVmcmVzaGFibGUiOmZhbHNlLCJ0eXBlIjoiYXV0aCJ9.BEPVqvNHo-zzvtyV9yjcTKiu0Z7t6XSHEclDEro74Uk'
     client.auth_store.save(token_user, None)
     license_verify_res = client.collection("Machines").get_list(1, 1, {
-        "filter": f"Fingerprint = '{machine_Fingerprint}'"})
+        "filter": f"Fingerprint = '{encryption.get_fingerprint()}'"})
     if license_verify_res.items:
         print("Machine already exists")
         # print(license_verify_res.items)
@@ -73,8 +68,8 @@ def create_machine(machine_Fingerprint, machine_ip, license_id):
         # 設置請求主體
         body = {
             "Licence": f"{license_id}",
-            "Fingerprint": f"{machine_Fingerprint}",
-            "IP": f"{machine_ip}",
+            "Fingerprint": f"{encryption.get_fingerprint()}",
+            "IP": f"{PC_detail.get_ip_address()}",
         }
         try:
             # 創建記錄

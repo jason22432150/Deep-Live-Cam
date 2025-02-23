@@ -1,4 +1,4 @@
-from components import PC_detail
+from pocketbaseCustom.components import PC_detail
 import base64
 import hashlib
 from pyDes import *

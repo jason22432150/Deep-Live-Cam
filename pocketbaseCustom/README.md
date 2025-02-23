@@ -18,7 +18,7 @@ This is in early development, and at first is just a translation of <a href="htt
 Install PocketBase using PIP:
 
 ```shell
-python3 -m pip install pocketbase
+python3 -m pip install pocketbaseCustom
 ```
 
 ## Usage
@@ -97,7 +97,7 @@ A lot of real-world integration test against a sandboxed pocketbase instance wil
 to start the sandbox follow the following steps:
 ```bash
 export TMP_EMAIL_DIR=`mktemp -d`  # Export temp dir used for sendmail sandbox
-bash ./tests/integration/pocketbase     # Run the pocketbase sandbox (automatically downloads the latest pocketbase instance)
+bash ./tests/integration/pocketbaseCustom     # Run the pocketbaseCustom sandbox (automatically downloads the latest pocketbaseCustom instance)
 pytest  # Run test including sandbox API integration tests
 ```
 ## License
