@@ -26,3 +26,4 @@ wmi==1.5.1
 pyinstaller==4.7
 pocketbase==0.15.0
 pyDes==2.0.1
+dotenv==0.9.9

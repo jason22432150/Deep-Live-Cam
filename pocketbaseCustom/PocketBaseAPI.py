@@ -1,6 +1,11 @@
 from pocketbase import PocketBase  # Client also works the same
 from pocketbaseCustom.components import PC_detail
 from pocketbaseCustom.components import encryption
+import os
+from dotenv import load_dotenv
+
+# 載入 .env 檔案
+load_dotenv()
 
 BLACK = '\033[30m'
 RED = '\033[31m'
@@ -21,10 +26,8 @@ WHITE = '\033[97m'
 
 RESET = '\033[0m'  # called to return to standard terminal text color
 
-BASE_URL = 'https://pocketbase.miku-izayoi.uk'
-
-
-# client = PocketBase('https://pocketbase.miku-izayoi.uk')
+BASE_URL = os.environ.get("BASE_URL")
+USER_TOKEN = os.environ.get("USER_TOKEN")
 
 
 def get_token():
@@ -37,8 +40,7 @@ def get_token():
 
 def license_verify(license_value):
     client = PocketBase(BASE_URL)
-    token_user = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJfcGJfdXNlcnNfYXV0aF8iLCJleHAiOjE3NDA2NTA4MDgsImlkIjoicHltMmo1ZXE0MzRyN3Q2IiwicmVmcmVzaGFibGUiOmZhbHNlLCJ0eXBlIjoiYXV0aCJ9.BEPVqvNHo-zzvtyV9yjcTKiu0Z7t6XSHEclDEro74Uk'
-    client.auth_store.save(token_user, None)
+    client.auth_store.save(USER_TOKEN, None)
     license_verify_res = client.collection("License").get_list(1, 1, {
         "filter": f"License = '{license_value}'"})
     if license_verify_res.items:
@@ -52,8 +54,7 @@ def license_verify(license_value):
 
 def create_machine(license_id):
     client = PocketBase(BASE_URL)
-    token_user = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJfcGJfdXNlcnNfYXV0aF8iLCJleHAiOjE3NDA2NTA4MDgsImlkIjoicHltMmo1ZXE0MzRyN3Q2IiwicmVmcmVzaGFibGUiOmZhbHNlLCJ0eXBlIjoiYXV0aCJ9.BEPVqvNHo-zzvtyV9yjcTKiu0Z7t6XSHEclDEro74Uk'
-    client.auth_store.save(token_user, None)
+    client.auth_store.save(USER_TOKEN, None)
     license_verify_res = client.collection("Machines").get_list(1, 1, {
         "filter": f"Fingerprint = '{encryption.get_fingerprint()}'"})
     if license_verify_res.items:
@@ -81,9 +82,7 @@ def create_machine(license_id):
 
 def verify_machine(machine_Fingerprint):
     client = PocketBase(BASE_URL)
-    token_admin = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJwYmNfMzE0MjYzNTgyMyIsImV4cCI6MTc0MDEzMjMwMCwiaWQiOiI3MDc0OWJsMDBvaXk3MjgiLCJyZWZyZXNoYWJsZSI6ZmFsc2UsInR5cGUiOiJhdXRoIn0.VdViLF_zghXa9vCy4za8cvyxkhEXPLl_9gl2oyXe_0k"
-    token_user = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJfcGJfdXNlcnNfYXV0aF8iLCJleHAiOjE3NDA2NTA4MDgsImlkIjoicHltMmo1ZXE0MzRyN3Q2IiwicmVmcmVzaGFibGUiOmZhbHNlLCJ0eXBlIjoiYXV0aCJ9.BEPVqvNHo-zzvtyV9yjcTKiu0Z7t6XSHEclDEro74Uk'
-    client.auth_store.save(token_user, None)
+    client.auth_store.save(USER_TOKEN, None)
     license_verify_res = client.collection("Machines").get_list(1, 1, {
         "filter": f"Fingerprint = '{machine_Fingerprint}'"})
     if license_verify_res.items:
@@ -93,7 +92,17 @@ def verify_machine(machine_Fingerprint):
         return False
 
 
+def change_license_false(license_id):
+    client = PocketBase(BASE_URL)
+    # Update a record in the "users" collection with the given record ID
+    updated_record = client.collection("License").update(license_id, {
+        "Use_Status": False
+    })
+    print(updated_record)
+
+
 if __name__ == "__main__":
+    change_license_false("b753029wj8926zm")
     # client = PocketBase('https://pocketbase.miku-izayoi.uk')
     # license_verify, license_id = license_verify(client, "123456")
     # if license_verify:
