@@ -5,18 +5,16 @@ from pocketbaseCustom import PocketBaseAPI
 from pocketbaseCustom import GUI
 from pocketbaseCustom.components import encryption
 
-
 if __name__ == "__main__":
     if not PocketBaseAPI.verify_machine(encryption.get_fingerprint()):
-        root = GUI.create_gui()
+        root = GUI.LicenseInputGUI()
         root.mainloop()
-        print(root)
+        # print("language:", root.selected_language)
+        print("root.result:", root.result)
+        if root.result is not None:
+            core.run(lang="zh-TW", CpuOrCuda="cuda")
+        else:
+            pass
     else:
-        pass
-
-    try:
         core.run(lang="zh-TW", CpuOrCuda="cuda")
-    except Exception as e:
-        print(e)
-        input("Press Enter to exit...")
-
+        pass
