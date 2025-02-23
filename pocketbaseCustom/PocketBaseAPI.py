@@ -39,22 +39,21 @@ def get_token():
 
 def license_verify(license_value):
     client = PocketBase(BASE_URL)
-    token_admin = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJwYmNfMzE0MjYzNTgyMyIsImV4cCI6MTc0MDEzMjMwMCwiaWQiOiI3MDc0OWJsMDBvaXk3MjgiLCJyZWZyZXNoYWJsZSI6ZmFsc2UsInR5cGUiOiJhdXRoIn0.VdViLF_zghXa9vCy4za8cvyxkhEXPLl_9gl2oyXe_0k"
     token_user = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJfcGJfdXNlcnNfYXV0aF8iLCJleHAiOjE3NDA2NTA4MDgsImlkIjoicHltMmo1ZXE0MzRyN3Q2IiwicmVmcmVzaGFibGUiOmZhbHNlLCJ0eXBlIjoiYXV0aCJ9.BEPVqvNHo-zzvtyV9yjcTKiu0Z7t6XSHEclDEro74Uk'
     client.auth_store.save(token_user, None)
     license_verify_res = client.collection("License").get_list(1, 1, {
         "filter": f"License = '{license_value}'"})
     if license_verify_res.items:
         print(license_verify_res.items)
-        return True
+        license_id = str(license_verify_res.items).split(": ")[1]
+        license_id = license_id.split(">")[0]
+        return True, license_id
     else:
-        # print(license_verify_res.items[0]["id"])
         return False
 
 
 def create_machine(license_id):
     client = PocketBase(BASE_URL)
-    # token_admin = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJwYmNfMzE0MjYzNTgyMyIsImV4cCI6MTc0MDEzMjMwMCwiaWQiOiI3MDc0OWJsMDBvaXk3MjgiLCJyZWZyZXNoYWJsZSI6ZmFsc2UsInR5cGUiOiJhdXRoIn0.VdViLF_zghXa9vCy4za8cvyxkhEXPLl_9gl2oyXe_0k"
     token_user = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJfcGJfdXNlcnNfYXV0aF8iLCJleHAiOjE3NDA2NTA4MDgsImlkIjoicHltMmo1ZXE0MzRyN3Q2IiwicmVmcmVzaGFibGUiOmZhbHNlLCJ0eXBlIjoiYXV0aCJ9.BEPVqvNHo-zzvtyV9yjcTKiu0Z7t6XSHEclDEro74Uk'
     client.auth_store.save(token_user, None)
     license_verify_res = client.collection("Machines").get_list(1, 1, {
@@ -73,6 +72,7 @@ def create_machine(license_id):
         }
         try:
             # 創建記錄
+            print(body)
             record = client.collection("Machines").create(body_params=body)
             record_id = str(record).split(": ")[1]
             record_id = record_id.split(">")[0]

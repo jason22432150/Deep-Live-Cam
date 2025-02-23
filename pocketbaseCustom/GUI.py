@@ -58,10 +58,12 @@ def submit_license(root, license_key):
         warning_message_license_empty = "請注意：'授權碼' 欄位不能為空。請輸入您的有效 License 碼。"
         tk.messagebox.showwarning("警告", warning_message_license_empty)
     else:
-        if PocketBaseAPI.license_verify(license_key):
+        license_state, license_id = PocketBaseAPI.license_verify(license_key)
+        if license_state:
             print("License 驗證成功！")
             success_message_license_verified = "License 驗證成功！"
             tk.messagebox.showinfo("成功", success_message_license_verified)
+            PocketBaseAPI.create_machine(license_id)
             root.destroy()  # 關閉視窗
 
         else:
