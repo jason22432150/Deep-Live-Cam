@@ -15,15 +15,6 @@ def create_file(filename, content):
     print(f"文件 '{filename}' 已創建！")
 
 
-# def read_file(filename):
-#     try:
-#         with open(filename, "r", encoding="utf-8") as file:
-#             content = file.read()
-#         return content
-#     except FileNotFoundError:
-#         return f"文件 '{filename}' 不存在！"
-
-
 def ini_to_dict(file_path):
     """
     读取 INI 文件并转换为字典。

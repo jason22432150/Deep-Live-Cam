@@ -41,14 +41,12 @@ def get_fingerprint():
              Returns None if any serial number retrieval fails.
     """
   cpu_serial = PC_detail.get_cpu_serial()
-  disk_serial = PC_detail.get_disk_serial()
   board_serial = PC_detail.get_board_serial()
   
   cpu_serial_str = str(cpu_serial) if cpu_serial else ""
-  disk_serial_str = str(disk_serial) if disk_serial else ""
   board_serial_str = str(board_serial) if board_serial else ""
   
-  hardware_identifiers_str = cpu_serial_str + disk_serial_str + board_serial_str
+  hardware_identifiers_str = cpu_serial_str + board_serial_str
   hardware_identifiers_bytes = hardware_identifiers_str.encode("utf-8")
   
   fingerprint_hash = hashlib.md5(hardware_identifiers_bytes)
